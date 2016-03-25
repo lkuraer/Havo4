@@ -131,8 +131,9 @@ struct DailyWeather {
             self._summary = summary
         }
         
-        if let color = dailyWeatherDict["temperatureMax"] as? Int {
-            self._color = colorifyBG(color)
+        if let temp = dailyWeatherDict["temperatureMax"] as? Int {
+            let gettingColor: Colors = Colors(temp: temp)
+            self._color = gettingColor.colorifyBG()
         }
     }
     
@@ -154,38 +155,6 @@ struct DailyWeather {
         dateFormatter.locale = NSLocale(localeIdentifier: NSLocale.currentLocale().localeIdentifier)
         dateFormatter.dateFormat = "dd.MM"
         return dateFormatter.stringFromDate(date)
-    }
-    
-    func colorifyBG(temperature: Int) -> UIColor {
-        switch temperature {
-        case -60...(-21):
-            return UIColor(red:0.16, green:0.51, blue:0.62, alpha:1)
-        case -20...(-11):
-            return UIColor(red:0.27, green:0.7, blue:0.84, alpha:1)
-        case -10...(-4):
-            return UIColor(red:0.49, green:0.83, blue:0.93, alpha:1)
-        case -3...0:
-            return UIColor(red:0.6, green:0.91, blue:1, alpha:1)
-        case 1...4:
-            return UIColor(red:0.12, green:0.69, blue:0.64, alpha:1)
-        case 5...9:
-            return UIColor(red:0.01, green:0.73, blue:0.67, alpha:1)
-        case 10...13:
-            return UIColor(red:0.32, green:0.82, blue:0.78, alpha:1)
-        case 14...16:
-            return UIColor(red:0.52, green:0.87, blue:0.84, alpha:1)
-        case 17...21:
-            return UIColor(red:1, green:0.81, blue:0.41, alpha:1)
-        case 21...25:
-            return UIColor(red:1, green:0.75, blue:0.2, alpha:1)
-        case 26...30:
-            return UIColor(red:0.94, green:0.69, blue:0.17, alpha:1)
-        case 31...35:
-            return UIColor(red:1, green:0.35, blue:0, alpha:1)
-        case 25...60:
-            return UIColor(red:0.82, green:0.1, blue:0.1, alpha:1)
-        default: return UIColor(red:0.84, green:0.84, blue:0.84, alpha:1)
-        }
     }
     
 }

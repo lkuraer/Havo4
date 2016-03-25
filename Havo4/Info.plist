@@ -36,5 +36,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>weathericons-regular-webfont.ttf</string>
+	</array>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Havo4 would like to use your current location.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Havo4 would like to use your current location.</string>
 </dict>
 </plist>

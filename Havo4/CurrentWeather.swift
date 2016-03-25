@@ -36,8 +36,9 @@ struct CurrentWeather {
             self._time = timeStringFromUnix(time)
         }
         
-        if let color = weatherDictionary["temperature"] as? Int {
-            self._color = colorifyBG(color)
+        if let temp = weatherDictionary["temperature"] as? Int {
+            let gettingColor: Colors = Colors(temp: temp)
+            self._color = gettingColor.colorifyBG()
         }
     }
     
@@ -46,17 +47,5 @@ struct CurrentWeather {
         dateFormatter.dateFormat = "HH:mm"
         return dateFormatter.stringFromDate(date)
     }
-    
-    func colorifyBG(temperature: Int) -> UIColor {
-        switch temperature {
-        case -60..<15:
-            return UIColor(red:0.3, green:0.81, blue:0.77, alpha:1)
-        case 16...60:
-            return UIColor(red:1, green:0.81, blue:0.41, alpha:1)
-        default: return UIColor(red:0.84, green:0.84, blue:0.84, alpha:1)
-        }
-    }
-    
-    
-    
+        
 }
