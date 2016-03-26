@@ -223,13 +223,15 @@ throughout</string>
                         <outlet property="currentDescription" destination="sxC-qW-GWf" id="KHW-kw-kcX"/>
                         <outlet property="currentIcon" destination="pWB-aK-2Tr" id="ZSY-R4-8IV"/>
                         <outlet property="currentLabel" destination="uZJ-xw-vbH" id="1wm-g0-HRg"/>
+                        <outlet property="humidityLabel" destination="zQ3-W3-wHX" id="vW6-b0-cpt"/>
+                        <outlet property="pressureLabel" destination="Znq-pu-Gq3" id="RR0-uE-GGa"/>
                         <outlet property="tableView" destination="WaH-ZA-i3U" id="ng6-nH-dEk"/>
                         <outlet property="viewBackground" destination="xGG-zf-PfZ" id="y1m-1m-TMu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-320" y="412"/>
+            <point key="canvasLocation" x="-480" y="401"/>
         </scene>
     </scenes>
 </document>

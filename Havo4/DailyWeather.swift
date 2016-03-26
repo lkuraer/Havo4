@@ -117,10 +117,11 @@ struct DailyWeather {
         }
         
         if let day = dailyWeatherDict["time"] as? Double {
-            let gotDay = dayStringFromUnix(day)
-            if let days: WeekDays = WeekDays(rawValue: gotDay) {
-                self._day = days.toRus()
-            }
+//            let gotDay = dayStringFromUnix(day)
+//            if let days: WeekDays = WeekDays(rawValue: gotDay) {
+//                self._day = days.toRus()
+//            }
+            self._day = dayStringFromUnix(day)
         }
         
         if let date = dailyWeatherDict["time"] as? Double {
