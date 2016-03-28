@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		D202D98E1CA15B0600E6706C /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D202D9811CA1590400E6706C /* Alamofire.framework */; };
 		D202D98F1CA15B0600E6706C /* Alamofire.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = D202D9811CA1590400E6706C /* Alamofire.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		D22B67611CA7C2120046DA81 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22B67601CA7C2120046DA81 /* Colors.swift */; };
+		D22B67691CA7C2310046DA81 /* WeekDays.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22B67681CA7C2310046DA81 /* WeekDays.swift */; };
+		D22B676B1CA7C2540046DA81 /* Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22B676A1CA7C2540046DA81 /* Icons.swift */; };
 		D25550CC1CA15BCA0097F0E3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25550CB1CA15BCA0097F0E3 /* Constants.swift */; };
 		D25550D81CA161E30097F0E3 /* CurrentWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25550D31CA161E30097F0E3 /* CurrentWeather.swift */; };
 		D25550D91CA161E30097F0E3 /* DailyWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25550D41CA161E30097F0E3 /* DailyWeather.swift */; };
@@ -96,6 +99,9 @@
 
 /* Begin PBXFileReference section */
 		D202D9761CA1590300E6706C /* Alamofire.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Alamofire.xcodeproj; path = Alamofire/Alamofire.xcodeproj; sourceTree = "<group>"; };
+		D22B67601CA7C2120046DA81 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		D22B67681CA7C2310046DA81 /* WeekDays.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeekDays.swift; sourceTree = "<group>"; };
+		D22B676A1CA7C2540046DA81 /* Icons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Icons.swift; sourceTree = "<group>"; };
 		D25550CB1CA15BCA0097F0E3 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		D25550D31CA161E30097F0E3 /* CurrentWeather.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentWeather.swift; sourceTree = "<group>"; };
 		D25550D41CA161E30097F0E3 /* DailyWeather.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DailyWeather.swift; sourceTree = "<group>"; };
@@ -141,6 +147,9 @@
 			children = (
 				D25550D61CA161E30097F0E3 /* weathericons-regular-webfont.ttf */,
 				D25550CB1CA15BCA0097F0E3 /* Constants.swift */,
+				D22B67601CA7C2120046DA81 /* Colors.swift */,
+				D22B67681CA7C2310046DA81 /* WeekDays.swift */,
+				D22B676A1CA7C2540046DA81 /* Icons.swift */,
 			);
 			name = Adds;
 			sourceTree = "<group>";
@@ -339,8 +348,11 @@
 				D25550D91CA161E30097F0E3 /* DailyWeather.swift in Sources */,
 				D27358D51CA1561E005F199E /* ViewController.swift in Sources */,
 				D27358D31CA1561E005F199E /* AppDelegate.swift in Sources */,
+				D22B67611CA7C2120046DA81 /* Colors.swift in Sources */,
 				D25550E11CA165CD0097F0E3 /* WeatherViewCell.swift in Sources */,
+				D22B676B1CA7C2540046DA81 /* Icons.swift in Sources */,
 				D25550D81CA161E30097F0E3 /* CurrentWeather.swift in Sources */,
+				D22B67691CA7C2310046DA81 /* WeekDays.swift in Sources */,
 				D25550CC1CA15BCA0097F0E3 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

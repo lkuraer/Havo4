@@ -28,36 +28,13 @@ class WeatherViewCell: UITableViewCell {
 
     }
     
-    func configureCell(daily: DailyWeather, lang: String) {
+    func configureCell(daily: DailyWeather) {
         
         self.weeklyWeath = daily
-//        var day: String!
-        
-//        if lang == "en_US" {
-//            let gotDay = self.weeklyWeath.day
-//            if let days: WeekDays = WeekDays(rawValue: gotDay) {
-//                day = days.toRus()
-//            }
-//        } else {
-//            day = "хуй"
-//        }
-//        
-////        var day: String! {
-////            if lang == "en_US"  {
-////                let gotDay = self.weeklyWeath.day
-////                var newDay: String!
-////                if let days: WeekDays = WeekDays(rawValue: gotDay) {
-////                    newDay = days.toRus()
-////                }
-////                return newDay
-////            } else {
-////               day = "хуй" 
-////            }
-////        }
         
         dailyTemp.text = "+\(self.weeklyWeath.maxTemperature)°"
         dailyIcon.text = self.weeklyWeath.icon
-        dailyDate.text = "\(self.weeklyWeath.day) \(self.weeklyWeath.date)"
+        dailyDate.text = "\(self.weeklyWeath.day.capitalizedString) \(self.weeklyWeath.date)"
         dailySummary.text = self.weeklyWeath.summary
         contentView.backgroundColor = self.weeklyWeath.color
         

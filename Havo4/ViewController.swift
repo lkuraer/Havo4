@@ -31,28 +31,24 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     let manager = CLLocationManager()
     var latitudeNew: Double = 0
     var longitudeNew: Double = 0
+    var city: String = ""
     var gradientLayer: CAGradientLayer!
-    var preferredLanguages: NSLocale!
-    var pre = NSLocale.preferredLanguages()[0]
+    let pre = NSLocale.currentLocale().objectForKey(NSLocaleLanguageCode) as! String
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: "handleRefresh:", forControlEvents: UIControlEvents.ValueChanged)
+        refreshControl.addTarget(self, action: #selector(ViewController.handleRefresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
         
         return refreshControl
     }()
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = locations.first {
-            downloadData { () -> () in
-                self.configureView()
-                self.tableView!.reloadData()
-                self.activityIndicator.stopAnimating()
-                self.activityIndicator.hidden = true
-                self.activityBackground.hidden = true
-                self.manager.stopUpdatingLocation()
-                print("You are here: \(location)")
-                print("I'm getting temperature here \(self.currentDict.temperature)")
-            }
+        downloadData { () -> () in
+            self.configureView()
+            self.tableView!.reloadData()
+            self.activityIndicator.stopAnimating()
+            self.activityIndicator.hidden = true
+            self.activityBackground.hidden = true
+            self.manager.stopUpdatingLocation()
         }
     }
     
@@ -69,22 +65,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.backgroundColor = UIColor(red:0.52, green:0.58, blue:0.62, alpha:1)
+        tableView.backgroundColor = UIColor(red:0.81, green:0.81, blue:0.81, alpha:1)
         refreshControl.tintColor = UIColor(red:1, green:1, blue:1, alpha:1)
         self.tableView.addSubview(self.refreshControl)
         
-        reverseGeoCoding()
-        
+        getLocation()
+        print("viewdid")
     }
     
     func handleRefresh(refreshControl: UIRefreshControl) {
-        
-        downloadData { () -> () in
-            self.configureView()
-            self.tableView!.reloadData()
-            print(self.week.count)
-        }
-        
+        getLocation()
+        print("refresh")
         refreshControl.endRefreshing()
     }
     
@@ -94,44 +85,29 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             var pressureText: String
             var humidityText: String
             
-            if pre == "ru-RU" {
+            if pre == "ru" {
                 humidityText = "Влажность\n\(current.humidity)%"
                 pressureText = "Давление\n\(current.pressure) мм"
+                cityLabel.text = "Сегодня: \(city)"
             } else {
                 humidityText = "Humidity\n\(current.humidity)%"
                 pressureText = "Pressure\n\(current.pressure)mm"
+                cityLabel.text = "\(city) today"
             }
             
             currentLabel.text = "\(currentWeather.temperature)º"
             currentIcon.text = current.icon
             currentDescription.text = current.summary
-            currentDayDateLabel.text = "\(current.day) \(current.date)"
+            currentDayDateLabel.text = "\(current.day.capitalizedString) \(current.date)"
             humidityLabel.text = humidityText
             pressureLabel.text = pressureText
             viewBackground.backgroundColor = currentWeather.color
             addGradient(viewBackground)
-            
+            print("configure")
         }
     }
     
     func reverseGeoCoding() {
-        
-        manager.delegate = self
-        manager.requestAlwaysAuthorization()
-        manager.startUpdatingLocation()
-        
-        let location = self.manager.location
-        
-        if let latitude: Double = location?.coordinate.latitude {
-            latitudeNew = latitude
-            print(latitudeNew)
-        }
-        
-        if let longitude: Double = location?.coordinate.longitude {
-            longitudeNew = longitude
-            print(longitudeNew)
-        }
-        
         let locationNew = CLLocation(latitude: latitudeNew, longitude: longitudeNew)
         
         CLGeocoder().reverseGeocodeLocation(locationNew, completionHandler: {(placemarks, error) -> Void in
@@ -144,42 +120,59 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             if placemarks!.count > 0 {
                 let pm = placemarks![0]
                 
-                if let city = pm.locality {
-                    if self.pre == "ru-RU" {
-                        self.cityLabel!.text = "\(city) сегодня"
-                    } else {
-                        self.cityLabel!.text = "\(city) today"
-                    }
+                if let town = pm.locality {
+                    self.city = town
                 }
-                
+                print(self.city)
             } else {
                 print("Problem with the data received from geocoder")
             }
         })
+        print("reverse")
+    }
+    
+    func getLocation() {
+        manager.delegate = self
+        manager.requestAlwaysAuthorization()
+        manager.startUpdatingLocation()
+        activityIndicator.hidden = false
+        activityIndicator.startAnimating()
+        
+        let location = self.manager.location
+        
+        if let latitude: Double = location?.coordinate.latitude {
+            latitudeNew = latitude
+            print(latitudeNew)
+        }
+        
+        if let longitude: Double = location?.coordinate.longitude {
+            longitudeNew = longitude
+            print(longitudeNew)
+        }
+        print("getloc")
+        reverseGeoCoding()
+        
     }
     
     func downloadData(completion: DownloadCoplete) {
         
-        activityIndicator.hidden = false
-        activityIndicator.startAnimating()
-        
         var weatherURL: String {
-            if pre == "ru-RU" {
+            if pre == "ru" {
                 return("\(BASE_URL)\(API_KEY)/\(latitudeNew),\(longitudeNew)?units=si&lang=ru")
             } else {
                 return("\(BASE_URL)\(API_KEY)/\(latitudeNew),\(longitudeNew)?units=si")
             }
         }
         
-        weekly.removeAll()
-        week.removeAll()
+        print(weatherURL)
         
         if let url = NSURL(string: weatherURL) {
             let request = Alamofire.request(.GET, url)
-            
+
             request.validate().responseJSON { response in
                 switch response.result {
                 case .Success:
+                    
                     if let data = response.result.value as! [String: AnyObject]! {
                         
                         self.weatherDict = data["currently"] as! [String: AnyObject]!
@@ -190,12 +183,19 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
                             let daily = DailyWeather(dailyWeatherDict: dailyWeather)
                             self.weekly.append(daily)
                         }
+                        
+                        if self.week.count > 7 || self.weekly.count > 8 {
+                            self.week.removeRange(7..<(self.week.count))
+                            self.weekly.removeRange(8..<(self.weekly.count))
+                        }
+                        
                     }
                 case .Failure(let error):
                     print(error)
                 }
                 self.week = self.weekly
                 self.week.removeAtIndex(0)
+                print("data")
                 completion()
             }
             
@@ -209,9 +209,25 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             let index = indexPath.item
             let weeklyWeath = week[index]
             
-            cell.configureCell(weeklyWeath, lang: pre)
+            var todayLabel: String {
+                if pre == "ru" {
+                    return("Завтра")
+                } else {
+                    return("Tomorrow")
+                }
+            }
             
-            return cell
+            if index == 0 {
+                cell.dailyTemp.text = "+\(self.week[index].maxTemperature)°"
+                cell.dailyIcon.text = self.week[index].icon
+                cell.dailyDate.text = "\(todayLabel) \(self.week[index].date)"
+                cell.dailySummary.text = self.week[index].summary
+                cell.contentView.backgroundColor = self.week[index].color
+                return cell
+            } else {
+                cell.configureCell(weeklyWeath)
+                return cell
+            }
             
         } else {
             return UITableViewCell()
@@ -233,7 +249,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             gradientLayer = CAGradientLayer()
             gradientLayer.frame = view.frame
             let color1 = UIColor(red:0, green:0, blue:0, alpha:0).CGColor as CGColorRef
-            let color2 = UIColor(red:0, green:0, blue:0, alpha:0.05).CGColor as CGColorRef
+            let color2 = UIColor(red:0, green:0, blue:0, alpha:0.1).CGColor as CGColorRef
             gradientLayer.colors = [color1, color2]
             gradientLayer.locations = [0.0, 1.0]
             view.layer.insertSublayer(self.gradientLayer, atIndex: UInt32(1))
