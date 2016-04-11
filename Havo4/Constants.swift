@@ -11,4 +11,5 @@ import Foundation
 let BASE_URL = "https://api.forecast.io/forecast/"
 let API_KEY = "f408268dbd1a091c36d503d0d822b834"
 
-typealias DownloadCoplete = () -> ()
+typealias DownloadComplete = () -> ()
+typealias ReverseComplete = () -> ()

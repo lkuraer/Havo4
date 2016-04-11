@@ -32,7 +32,7 @@ class WeatherViewCell: UITableViewCell {
         
         self.weeklyWeath = daily
         
-        dailyTemp.text = "+\(self.weeklyWeath.maxTemperature)°"
+        dailyTemp.text = "\(self.weeklyWeath.maxTemperature)°"
         dailyIcon.text = self.weeklyWeath.icon
         dailyDate.text = "\(self.weeklyWeath.day.capitalizedString) \(self.weeklyWeath.date)"
         dailySummary.text = self.weeklyWeath.summary

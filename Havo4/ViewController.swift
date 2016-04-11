@@ -15,14 +15,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     @IBOutlet weak var activityBackground: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var viewBackground: UIView!
-    @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var currentLabel: UILabel!
     @IBOutlet weak var currentIcon: UILabel!
     @IBOutlet weak var currentDescription: UILabel!
     @IBOutlet weak var currentDayDateLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var pressureLabel: UILabel!
-    @IBOutlet weak var humidityLabel: UILabel!
+    @IBOutlet weak var currently: UILabel!
+    @IBOutlet weak var cityLabel: UILabel!
+    @IBOutlet weak var maximum: UILabel!
+    @IBOutlet weak var minimum: UILabel!
+    @IBOutlet weak var minTempToday: UILabel!
+    @IBOutlet weak var maxTempToday: UILabel!
     var weatherDict: [String: AnyObject]!
     var currentDict: CurrentWeather!
     var dailyArray: [[String: AnyObject]]!
@@ -37,17 +40,37 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(ViewController.handleRefresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
-        
         return refreshControl
     }()
     
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return UIStatusBarStyle.LightContent
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.backgroundColor = UIColor(red:0.81, green:0.81, blue:0.81, alpha:1)
+        refreshControl.tintColor = UIColor(red:1, green:1, blue:1, alpha:1)
+        self.tableView.addSubview(self.refreshControl)
+        manager.delegate = self
+        manager.requestWhenInUseAuthorization()
+        updateLocation()
+    }
+    
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        downloadData { () -> () in
+        if let location = locations.last {
+            latitudeNew = location.coordinate.latitude
+            longitudeNew = location.coordinate.longitude
+        }
+        downloadData {
+            print(self.week[1])
+            print("requested/downloaded")
+            self.activityIndicator.hidden = true
+            self.activityIndicator.stopAnimating()
             self.configureView()
             self.tableView!.reloadData()
-            self.activityIndicator.stopAnimating()
-            self.activityIndicator.hidden = true
-            self.activityBackground.hidden = true
             self.manager.stopUpdatingLocation()
         }
     }
@@ -56,60 +79,60 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         print("Failed to find user's location: \(error.localizedDescription)")
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        tableView.delegate = self
-        tableView.dataSource = self
-        
-        tableView.backgroundColor = UIColor(red:0.81, green:0.81, blue:0.81, alpha:1)
-        refreshControl.tintColor = UIColor(red:1, green:1, blue:1, alpha:1)
-        self.tableView.addSubview(self.refreshControl)
-        
-        getLocation()
-        print("viewdid")
-    }
-    
     func handleRefresh(refreshControl: UIRefreshControl) {
-        getLocation()
-        print("refresh")
-        refreshControl.endRefreshing()
+        updateLocation()
+        self.refreshControl.endRefreshing()
     }
     
-    func configureView() {
-        if let currentWeather = currentDict {
-            let current = weekly[0]
-            var pressureText: String
-            var humidityText: String
-            
-            if pre == "ru" {
-                humidityText = "Влажность\n\(current.humidity)%"
-                pressureText = "Давление\n\(current.pressure) мм"
-                cityLabel.text = "Сегодня: \(city)"
+    func updateLocation() {
+        manager.startUpdatingLocation()
+        activityIndicator.hidden = false
+        activityIndicator.startAnimating()
+    }
+    
+    func getCity() {
+        reverseGeoCoding {
+            if self.pre == "ru" {
+                self.cityLabel.text = "\(self.city)"
             } else {
-                humidityText = "Humidity\n\(current.humidity)%"
-                pressureText = "Pressure\n\(current.pressure)mm"
-                cityLabel.text = "\(city) today"
+                self.cityLabel.text = "\(self.city)"
             }
-            
-            currentLabel.text = "\(currentWeather.temperature)º"
-            currentIcon.text = current.icon
-            currentDescription.text = current.summary
-            currentDayDateLabel.text = "\(current.day.capitalizedString) \(current.date)"
-            humidityLabel.text = humidityText
-            pressureLabel.text = pressureText
-            viewBackground.backgroundColor = currentWeather.color
-            addGradient(viewBackground)
-            print("configure")
         }
     }
     
-    func reverseGeoCoding() {
-        let locationNew = CLLocation(latitude: latitudeNew, longitude: longitudeNew)
+    func configureView() {
+        getCity()
+        let currentWeather = currentDict
+        let current = weekly[0]
         
+        if pre == "ru" {
+            currently.text = "Сейчас"
+            minimum.text = "Минимум"
+            maximum.text = "Максимум"
+        } else {
+            currently.text = "Currently"
+            minimum.text = "Minimum"
+            maximum.text = "Maximum"
+        }
+        
+        currentLabel.text = "\(currentWeather.temperature)º"
+        currentIcon.text = current.icon
+        currentDescription.text = current.summary
+        currentDayDateLabel.text = "\(current.day.capitalizedString) \(current.date)"
+        minTempToday.text = "\(current.minTemperature)º"
+        maxTempToday.text = "\(current.maxTemperature)º"
+        viewBackground.backgroundColor = currentWeather.color
+        addGradient(viewBackground)
+
+        activityIndicator.stopAnimating()
+        activityIndicator.hidden = true
+        activityBackground.hidden = true
+        
+    }
+    
+    func reverseGeoCoding(completion: ReverseComplete) {
+        
+        let locationNew = CLLocation(latitude: latitudeNew, longitude: longitudeNew)
         CLGeocoder().reverseGeocodeLocation(locationNew, completionHandler: {(placemarks, error) -> Void in
             
             if error != nil {
@@ -122,39 +145,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
                 
                 if let town = pm.locality {
                     self.city = town
+                    completion()
                 }
-                print(self.city)
+                print("reversed to \(self.city)")
             } else {
                 print("Problem with the data received from geocoder")
             }
         })
-        print("reverse")
-    }
-    
-    func getLocation() {
-        manager.delegate = self
-        manager.requestAlwaysAuthorization()
-        manager.startUpdatingLocation()
-        activityIndicator.hidden = false
-        activityIndicator.startAnimating()
-        
-        let location = self.manager.location
-        
-        if let latitude: Double = location?.coordinate.latitude {
-            latitudeNew = latitude
-            print(latitudeNew)
-        }
-        
-        if let longitude: Double = location?.coordinate.longitude {
-            longitudeNew = longitude
-            print(longitudeNew)
-        }
-        print("getloc")
-        reverseGeoCoding()
         
     }
     
-    func downloadData(completion: DownloadCoplete) {
+    func downloadData(completion: DownloadComplete) {
         
         var weatherURL: String {
             if pre == "ru" {
@@ -168,11 +169,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         
         if let url = NSURL(string: weatherURL) {
             let request = Alamofire.request(.GET, url)
-
+            
             request.validate().responseJSON { response in
                 switch response.result {
                 case .Success:
-                    
+                    self.week = []
+                    self.weekly = []
                     if let data = response.result.value as! [String: AnyObject]! {
                         
                         self.weatherDict = data["currently"] as! [String: AnyObject]!
@@ -182,23 +184,21 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
                         for dailyWeather in self.dailyArray {
                             let daily = DailyWeather(dailyWeatherDict: dailyWeather)
                             self.weekly.append(daily)
+                            
                         }
-                        
-                        if self.week.count > 7 || self.weekly.count > 8 {
-                            self.week.removeRange(7..<(self.week.count))
-                            self.weekly.removeRange(8..<(self.weekly.count))
+                        for x in 0...7 {
+                            if x == 0 {
+                            } else {
+                                self.week.append(self.weekly[x])
+                            }
                         }
-                        
                     }
                 case .Failure(let error):
                     print(error)
                 }
-                self.week = self.weekly
-                self.week.removeAtIndex(0)
-                print("data")
                 completion()
             }
-            
+
         }
     }
     
@@ -218,7 +218,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             }
             
             if index == 0 {
-                cell.dailyTemp.text = "+\(self.week[index].maxTemperature)°"
+                cell.dailyTemp.text = "\(self.week[index].maxTemperature)°"
                 cell.dailyIcon.text = self.week[index].icon
                 cell.dailyDate.text = "\(todayLabel) \(self.week[index].date)"
                 cell.dailySummary.text = self.week[index].summary
