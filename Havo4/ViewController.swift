@@ -59,14 +59,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         updateLocation()
     }
     
+    override func viewDidAppear(animated: Bool) {
+        updateLocation()
+    }
+    
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
             latitudeNew = location.coordinate.latitude
             longitudeNew = location.coordinate.longitude
         }
         downloadData {
-            print(self.week[1])
-            print("requested/downloaded")
             self.activityIndicator.hidden = true
             self.activityIndicator.stopAnimating()
             self.configureView()
@@ -77,6 +79,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         print("Failed to find user's location: \(error.localizedDescription)")
+        showAlert("Unable to find location", message: "Enable network connection and try again")
     }
     
     func handleRefresh(refreshControl: UIRefreshControl) {
@@ -93,9 +96,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     func getCity() {
         reverseGeoCoding {
             if self.pre == "ru" {
-                self.cityLabel.text = "\(self.city)"
+                self.cityLabel.text = "\(self.city) сейчас"
             } else {
-                self.cityLabel.text = "\(self.city)"
+                self.cityLabel.text = "\(self.city) now"
             }
         }
     }
@@ -106,11 +109,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         let current = weekly[0]
         
         if pre == "ru" {
-            currently.text = "Сейчас"
             minimum.text = "Минимум"
             maximum.text = "Максимум"
         } else {
-            currently.text = "Currently"
             minimum.text = "Minimum"
             maximum.text = "Maximum"
         }
@@ -195,6 +196,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
                     }
                 case .Failure(let error):
                     print(error)
+                    self.showAlert("You are offline", message: "Enable network connection and try again")
                 }
                 completion()
             }
@@ -220,7 +222,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             if index == 0 {
                 cell.dailyTemp.text = "\(self.week[index].maxTemperature)°"
                 cell.dailyIcon.text = self.week[index].icon
-                cell.dailyDate.text = "\(todayLabel) \(self.week[index].date)"
+                cell.dailyDate.text = "\(todayLabel)"
                 cell.dailySummary.text = self.week[index].summary
                 cell.contentView.backgroundColor = self.week[index].color
                 return cell
@@ -254,6 +256,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             gradientLayer.locations = [0.0, 1.0]
             view.layer.insertSublayer(self.gradientLayer, atIndex: UInt32(1))
         }
+    }
+    
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+        let action = UIAlertAction(title: "Ok", style: .Default) { refreshPressed in
+            self.updateLocation()
+        }
+        alert.addAction(action)
+        presentViewController(alert, animated: true, completion: nil)
     }
     
 }
