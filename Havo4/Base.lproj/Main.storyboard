@@ -24,19 +24,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pJb-IF-Ngv">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                                <subviews>
-                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="IMf-RC-fmt">
-                                        <rect key="frame" x="290" y="290" width="20" height="20"/>
-                                    </activityIndicatorView>
-                                </subviews>
-                                <color key="backgroundColor" red="0.83921568627450982" green="0.11372549019607843" blue="0.34509803921568627" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstItem="IMf-RC-fmt" firstAttribute="centerY" secondItem="pJb-IF-Ngv" secondAttribute="centerY" id="0FK-Ue-Ufd"/>
-                                    <constraint firstItem="IMf-RC-fmt" firstAttribute="centerX" secondItem="pJb-IF-Ngv" secondAttribute="centerX" id="zuR-Zx-JTD"/>
-                                </constraints>
-                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xGG-zf-PfZ">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="205"/>
                                 <subviews>
@@ -140,7 +127,7 @@
                                         </subviews>
                                     </stackView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gSF-A5-CEC">
-                                        <rect key="frame" x="484" y="28" width="108" height="13"/>
+                                        <rect key="frame" x="484" y="32" width="108" height="13"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="13" id="aK4-B0-KTv"/>
                                             <constraint firstAttribute="width" constant="108" id="yJT-K7-dSA"/>
@@ -152,7 +139,7 @@
                                 </subviews>
                                 <color key="backgroundColor" red="1" green="0.80000000000000004" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstItem="gSF-A5-CEC" firstAttribute="top" secondItem="xGG-zf-PfZ" secondAttribute="top" constant="28" id="98N-RJ-bjG"/>
+                                    <constraint firstItem="gSF-A5-CEC" firstAttribute="top" secondItem="xGG-zf-PfZ" secondAttribute="top" constant="32" id="98N-RJ-bjG"/>
                                     <constraint firstItem="vOz-7q-tg7" firstAttribute="leading" secondItem="xGG-zf-PfZ" secondAttribute="leading" constant="8" id="DAG-ER-hvX"/>
                                     <constraint firstAttribute="bottom" secondItem="udN-vz-a82" secondAttribute="bottom" constant="15" id="FIt-fj-Gtk"/>
                                     <constraint firstAttribute="trailing" secondItem="vOz-7q-tg7" secondAttribute="trailing" constant="8" id="N7g-3S-zhJ"/>
@@ -209,7 +196,7 @@
                                                                         <constraint firstAttribute="height" constant="50" id="bqJ-z3-MPu"/>
                                                                         <constraint firstAttribute="width" constant="90" id="e5V-EP-57d"/>
                                                                     </constraints>
-                                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
+                                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Italic" family="Helvetica Neue" pointSize="11"/>
                                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
@@ -247,6 +234,19 @@
                                     <outlet property="delegate" destination="8bC-Xf-vdC" id="3Pl-jr-2TU"/>
                                 </connections>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pJb-IF-Ngv">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="IMf-RC-fmt">
+                                        <rect key="frame" x="290" y="290" width="20" height="20"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.83921568627450982" green="0.11372549019607843" blue="0.34509803921568627" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="IMf-RC-fmt" firstAttribute="centerY" secondItem="pJb-IF-Ngv" secondAttribute="centerY" id="0FK-Ue-Ufd"/>
+                                    <constraint firstItem="IMf-RC-fmt" firstAttribute="centerX" secondItem="pJb-IF-Ngv" secondAttribute="centerX" id="zuR-Zx-JTD"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.58823529409999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>

@@ -79,7 +79,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         print("Failed to find user's location: \(error.localizedDescription)")
-        showAlert("Unable to find location", message: "Enable network connection and try again")
     }
     
     func handleRefresh(refreshControl: UIRefreshControl) {
@@ -119,7 +118,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         currentLabel.text = "\(currentWeather.temperature)º"
         currentIcon.text = current.icon
         currentDescription.text = current.summary
-        currentDayDateLabel.text = "\(current.day.capitalizedString) \(current.date)"
+        currentDayDateLabel.text = "\(currentWeather.day.capitalizedString) \(current.date)"
         minTempToday.text = "\(current.minTemperature)º"
         maxTempToday.text = "\(current.maxTemperature)º"
         viewBackground.backgroundColor = currentWeather.color
@@ -193,12 +192,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
                                 self.week.append(self.weekly[x])
                             }
                         }
+                        completion()
                     }
+                    
                 case .Failure(let error):
-                    print(error)
                     self.showAlert("You are offline", message: "Enable network connection and try again")
+                    print("Alamofire error: \(error)")
                 }
-                completion()
+                
             }
 
         }
