@@ -24,19 +24,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pJb-IF-Ngv">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                                <subviews>
-                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="IMf-RC-fmt">
-                                        <rect key="frame" x="290" y="290" width="20" height="20"/>
-                                    </activityIndicatorView>
-                                </subviews>
-                                <color key="backgroundColor" red="0.83921568627450982" green="0.11372549019607843" blue="0.34509803921568627" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstItem="IMf-RC-fmt" firstAttribute="centerY" secondItem="pJb-IF-Ngv" secondAttribute="centerY" id="0FK-Ue-Ufd"/>
-                                    <constraint firstItem="IMf-RC-fmt" firstAttribute="centerX" secondItem="pJb-IF-Ngv" secondAttribute="centerX" id="zuR-Zx-JTD"/>
-                                </constraints>
-                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xGG-zf-PfZ">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="205"/>
                                 <subviews>
@@ -190,7 +177,7 @@
                                                         <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="dz1-cg-20N">
                                                             <rect key="frame" x="0.0" y="15" width="65" height="20"/>
                                                             <subviews>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="We" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="anx-Y8-wEQ">
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="We" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.69999999999999996" translatesAutoresizingMaskIntoConstraints="NO" id="anx-Y8-wEQ">
                                                                     <rect key="frame" x="0.0" y="0.0" width="29" height="20"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="20" id="U7H-1F-6qM"/>
@@ -200,7 +187,7 @@
                                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lyJ-Yz-DGk">
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lyJ-Yz-DGk">
                                                                     <rect key="frame" x="32" y="0.0" width="34" height="15"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="15" id="6qR-8Q-LXB"/>
@@ -273,6 +260,19 @@
                                     <outlet property="delegate" destination="8bC-Xf-vdC" id="3Pl-jr-2TU"/>
                                 </connections>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pJb-IF-Ngv">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="IMf-RC-fmt">
+                                        <rect key="frame" x="290" y="290" width="20" height="20"/>
+                                    </activityIndicatorView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.83921568627450982" green="0.11372549019607843" blue="0.34509803921568627" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="IMf-RC-fmt" firstAttribute="centerY" secondItem="pJb-IF-Ngv" secondAttribute="centerY" id="0FK-Ue-Ufd"/>
+                                    <constraint firstItem="IMf-RC-fmt" firstAttribute="centerX" secondItem="pJb-IF-Ngv" secondAttribute="centerX" id="zuR-Zx-JTD"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.58823529409999997" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
