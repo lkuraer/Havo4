@@ -223,8 +223,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             if index == 0 {
                 cell.dailyTemp.text = "\(self.week[index].maxTemperature)°"
                 cell.dailyIcon.text = self.week[index].icon
-                cell.dailyDate.text = "\(todayLabel)"
+                cell.dailyDay.text = "\(todayLabel)"
                 cell.dailySummary.text = self.week[index].summary
+                cell.dailyDate.text = ""
                 cell.contentView.backgroundColor = self.week[index].color
                 return cell
             } else {
@@ -251,8 +252,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         } else {
             gradientLayer = CAGradientLayer()
             gradientLayer.frame = view.frame
-            let color1 = UIColor(red:0, green:0, blue:0, alpha:0).CGColor as CGColorRef
-            let color2 = UIColor(red:0, green:0, blue:0, alpha:0.1).CGColor as CGColorRef
+            let color1 = UIColor(red:1, green:1, blue:1, alpha:0.07).CGColor as CGColorRef
+            let color2 = UIColor(red:1, green:1, blue:1, alpha:0).CGColor as CGColorRef
             gradientLayer.colors = [color1, color2]
             gradientLayer.locations = [0.0, 1.0]
             view.layer.insertSublayer(self.gradientLayer, atIndex: UInt32(1))
