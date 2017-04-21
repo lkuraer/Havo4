@@ -20,19 +20,19 @@ import Foundation
 import UIKit
 
 struct DailyWeather {
-    private var _minTemperature: Int!
-    private var _maxTemperature: Int!
-    private var _icon: String!
-    private var _sunrise: String!
-    private var _sunset: String!
-    private var _windSpeed: Int!
-    private var _humidity: Double!
-    private var _pressure: Int!
-    private var _day: String!
-    private var _date: String!
-    private var _summary: String!
-    private var _color: UIColor!
-    let dateFormatter = NSDateFormatter()
+    fileprivate var _minTemperature: Int!
+    fileprivate var _maxTemperature: Int!
+    fileprivate var _icon: String!
+    fileprivate var _sunrise: String!
+    fileprivate var _sunset: String!
+    fileprivate var _windSpeed: Int!
+    fileprivate var _humidity: Double!
+    fileprivate var _pressure: Int!
+    fileprivate var _day: String!
+    fileprivate var _date: String!
+    fileprivate var _summary: String!
+    fileprivate var _color: UIColor!
+    let dateFormatter = DateFormatter()
     
     var color: UIColor {
         return _color
@@ -134,24 +134,24 @@ struct DailyWeather {
         }
     }
     
-    func timeStringFromUnix(UnixTime: Double) -> String {
-        let date = NSDate(timeIntervalSince1970: UnixTime)
+    func timeStringFromUnix(_ UnixTime: Double) -> String {
+        let date = Date(timeIntervalSince1970: UnixTime)
         dateFormatter.dateFormat = "HH:mm"
-        return dateFormatter.stringFromDate(date)
+        return dateFormatter.string(from: date)
     }
     
-    func dayStringFromUnix(time: Double) -> String {
-        let date = NSDate(timeIntervalSince1970: time)
-        dateFormatter.locale = NSLocale(localeIdentifier: NSLocale.currentLocale().localeIdentifier)
+    func dayStringFromUnix(_ time: Double) -> String {
+        let date = Date(timeIntervalSince1970: time)
+        dateFormatter.locale = Locale(identifier: Locale.current.identifier)
         dateFormatter.dateFormat = "EEEEEE"
-        return dateFormatter.stringFromDate(date)
+        return dateFormatter.string(from: date)
     }
     
-    func dateStringFromUnix(date: Double) -> String {
-        let date = NSDate(timeIntervalSince1970: date)
-        dateFormatter.locale = NSLocale(localeIdentifier: NSLocale.currentLocale().localeIdentifier)
+    func dateStringFromUnix(_ date: Double) -> String {
+        let date = Date(timeIntervalSince1970: date)
+        dateFormatter.locale = Locale(identifier: Locale.current.identifier)
         dateFormatter.dateFormat = "dd.MM"
-        return dateFormatter.stringFromDate(date)
+        return dateFormatter.string(from: date)
     }
     
 }

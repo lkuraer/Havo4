@@ -10,12 +10,12 @@ import Foundation
 import UIKit
 
 struct CurrentWeather {
-    private var _temperature: Int!
-    private var _time: String!
-    private var _color: UIColor!
-    private var _day: String!
+    fileprivate var _temperature: Int!
+    fileprivate var _time: String!
+    fileprivate var _color: UIColor!
+    fileprivate var _day: String!
     
-    let dateFormatter = NSDateFormatter()
+    let dateFormatter = DateFormatter()
     
     var color: UIColor {
         return _color
@@ -52,17 +52,17 @@ struct CurrentWeather {
         }
     }
     
-    func timeStringFromUnix(UnixTime: Double) -> String {
-        let date = NSDate(timeIntervalSince1970: UnixTime)
+    func timeStringFromUnix(_ UnixTime: Double) -> String {
+        let date = Date(timeIntervalSince1970: UnixTime)
         dateFormatter.dateFormat = "HH:mm"
-        return dateFormatter.stringFromDate(date)
+        return dateFormatter.string(from: date)
     }
     
-    func dayStringFromUnix(time: Double) -> String {
-        let date = NSDate(timeIntervalSince1970: time)
-        dateFormatter.locale = NSLocale(localeIdentifier: NSLocale.currentLocale().localeIdentifier)
+    func dayStringFromUnix(_ time: Double) -> String {
+        let date = Date(timeIntervalSince1970: time)
+        dateFormatter.locale = Locale(identifier: Locale.current.identifier)
         dateFormatter.dateFormat = "EEEE"
-        return dateFormatter.stringFromDate(date)
+        return dateFormatter.string(from: date)
     }
         
 }

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 struct Colors {
-    private var _temp: Int!
+    fileprivate var _temp: Int!
     
     var temp: Int! {
         return _temp

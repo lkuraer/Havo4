@@ -9,8 +9,10 @@
 import UIKit
 import Alamofire
 import CoreLocation
+import RxSwift
+import RxCocoa
 
-class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, CLLocationManagerDelegate {
     
     @IBOutlet weak var activityBackground: UIView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
@@ -30,65 +32,73 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
     var currentDict: CurrentWeather!
     var dailyArray: [[String: AnyObject]]!
     var weekly: [DailyWeather] = []
-    var week: [DailyWeather] = []
+    
+    let disposeBag = DisposeBag()
+    var week = Variable<[DailyWeather]>([])
+    
     let manager = CLLocationManager()
     var latitudeNew: Double = 0
     var longitudeNew: Double = 0
     var city: String = ""
     var gradientLayer: CAGradientLayer!
-    let pre = NSLocale.currentLocale().objectForKey(NSLocaleLanguageCode) as! String
+    let pre = (Locale.current as NSLocale).object(forKey: NSLocale.Key.languageCode) as! String
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(ViewController.handleRefresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
+        refreshControl.addTarget(self, action: #selector(ViewController.handleRefresh(_:)), for: UIControlEvents.valueChanged)
         return refreshControl
     }()
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.delegate = self
-        tableView.dataSource = self
+        
+        week.asObservable().subscribe(onNext: {
+            week in
+            print(week.count)
+            self.generateTable()
+        }).addDisposableTo(disposeBag)
+        
         tableView.backgroundColor = UIColor(red:0.81, green:0.81, blue:0.81, alpha:1)
         refreshControl.tintColor = UIColor(red:1, green:1, blue:1, alpha:1)
         self.tableView.addSubview(self.refreshControl)
         manager.delegate = self
         manager.requestWhenInUseAuthorization()
         updateLocation()
+        
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         updateLocation()
     }
     
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last {
             latitudeNew = location.coordinate.latitude
             longitudeNew = location.coordinate.longitude
         }
         downloadData {
-            self.activityIndicator.hidden = true
+            self.activityIndicator.isHidden = true
             self.activityIndicator.stopAnimating()
             self.configureView()
-            self.tableView!.reloadData()
             self.manager.stopUpdatingLocation()
         }
     }
     
-    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Failed to find user's location: \(error.localizedDescription)")
     }
     
-    func handleRefresh(refreshControl: UIRefreshControl) {
+    func handleRefresh(_ refreshControl: UIRefreshControl) {
         updateLocation()
         self.refreshControl.endRefreshing()
     }
     
     func updateLocation() {
         manager.startUpdatingLocation()
-        activityIndicator.hidden = false
+        activityIndicator.isHidden = false
         activityIndicator.startAnimating()
     }
     
@@ -115,22 +125,29 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
             maximum.text = "Maximum"
         }
         
-        currentLabel.text = "\(currentWeather.temperature)º"
+        if let currentTemp = currentWeather?.temperature {
+            currentLabel.text = "\(currentTemp)º"
+        }
+        
         currentIcon.text = current.icon
         currentDescription.text = current.summary
-        currentDayDateLabel.text = "\(currentWeather.day.capitalizedString) \(current.date)"
+        
+        if let currentDay = currentWeather?.day.capitalized {
+            currentDayDateLabel.text = "\(currentDay) \(current.date)"
+        }
+        
         minTempToday.text = "\(current.minTemperature)º"
         maxTempToday.text = "\(current.maxTemperature)º"
-        viewBackground.backgroundColor = currentWeather.color
+        viewBackground.backgroundColor = currentWeather?.color
         addGradient(viewBackground)
 
         activityIndicator.stopAnimating()
-        activityIndicator.hidden = true
-        activityBackground.hidden = true
+        activityIndicator.isHidden = true
+        activityBackground.isHidden = true
         
     }
     
-    func reverseGeoCoding(completion: ReverseComplete) {
+    func reverseGeoCoding(_ completion: @escaping ReverseComplete) {
         
         let locationNew = CLLocation(latitude: latitudeNew, longitude: longitudeNew)
         CLGeocoder().reverseGeocodeLocation(locationNew, completionHandler: {(placemarks, error) -> Void in
@@ -155,7 +172,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         
     }
     
-    func downloadData(completion: DownloadComplete) {
+    func downloadData(_ completion: @escaping DownloadComplete) {
         
         var weatherURL: String {
             if pre == "ru" {
@@ -167,13 +184,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         
         print(weatherURL)
         
-        if let url = NSURL(string: weatherURL) {
-            let request = Alamofire.request(.GET, url)
+        if let url = URL(string: weatherURL) {
+            let request = Alamofire.request(url)
             
             request.validate().responseJSON { response in
                 switch response.result {
-                case .Success:
-                    self.week = []
+                case .success:
+                    
+                    self.week.value = []
+
                     self.weekly = []
                     if let data = response.result.value as! [String: AnyObject]! {
                         
@@ -184,18 +203,17 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
                         for dailyWeather in self.dailyArray {
                             let daily = DailyWeather(dailyWeatherDict: dailyWeather)
                             self.weekly.append(daily)
-                            
                         }
                         for x in 0...7 {
                             if x == 0 {
                             } else {
-                                self.week.append(self.weekly[x])
+                                self.week.value.append(self.weekly[x])
                             }
                         }
                         completion()
                     }
                     
-                case .Failure(let error):
+                case .failure(let error):
                     self.showAlert("You are offline", message: "Enable network connection and try again")
                     print("Alamofire error: \(error)")
                 }
@@ -205,68 +223,35 @@ class ViewController: UIViewController, CLLocationManagerDelegate, UITableViewDe
         }
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        if let cell = tableView.dequeueReusableCellWithIdentifier("WeatherViewCell", forIndexPath: indexPath) as? WeatherViewCell {
-            
-            let index = indexPath.item
-            let weeklyWeath = week[index]
-            
-            var todayLabel: String {
-                if pre == "ru" {
-                    return("Завтра")
-                } else {
-                    return("Tomorrow")
-                }
-            }
-            
-            if index == 0 {
-                cell.dailyTemp.text = "\(self.week[index].maxTemperature)°"
-                cell.dailyIcon.text = self.week[index].icon
-                cell.dailyDay.text = "\(todayLabel)"
-                cell.dailySummary.text = self.week[index].summary
-                cell.dailyDate.text = ""
-                cell.contentView.backgroundColor = self.week[index].color
-                return cell
-            } else {
-                cell.configureCell(weeklyWeath)
-                return cell
-            }
-            
-        } else {
-            return UITableViewCell()
-        }
+    func generateTable() {
+        tableView.dataSource = nil
+        week.asObservable().bindTo(tableView.rx.items(cellIdentifier: "WeatherViewCell", cellType: WeatherViewCell.self)) { (index, weather, cell) in
+            cell.configureCell(daily: weather, index: index)
+            }.addDisposableTo(disposeBag)
+
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return week.count
-    }
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func addGradient(view: UIView) {
+    func addGradient(_ view: UIView) {
         if gradientLayer != nil {
             return
         } else {
             gradientLayer = CAGradientLayer()
             gradientLayer.frame = view.frame
-            let color1 = UIColor(red:1, green:1, blue:1, alpha:0.07).CGColor as CGColorRef
-            let color2 = UIColor(red:1, green:1, blue:1, alpha:0).CGColor as CGColorRef
+            let color1 = UIColor(red:1, green:1, blue:1, alpha:0.07).cgColor as CGColor
+            let color2 = UIColor(red:1, green:1, blue:1, alpha:0).cgColor as CGColor
             gradientLayer.colors = [color1, color2]
             gradientLayer.locations = [0.0, 1.0]
-            view.layer.insertSublayer(self.gradientLayer, atIndex: UInt32(1))
+            view.layer.insertSublayer(self.gradientLayer, at: UInt32(1))
         }
     }
     
-    func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-        let action = UIAlertAction(title: "Ok", style: .Default) { refreshPressed in
+    func showAlert(_ title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let action = UIAlertAction(title: "Ok", style: .default) { refreshPressed in
             self.updateLocation()
         }
         alert.addAction(action)
-        presentViewController(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
     
 }

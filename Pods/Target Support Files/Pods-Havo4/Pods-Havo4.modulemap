@@ -1,0 +1,6 @@
+framework module Pods_Havo4 {
+  umbrella header "Pods-Havo4-umbrella.h"
+
+  export *
+  module * { export * }
+}
