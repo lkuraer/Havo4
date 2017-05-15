@@ -1,15 +1,5 @@
 //
 //  DailyWeather.swift
-//  Havo2
-//
-//  Created by Ruslan Sabirov on 3/4/16.
-//  Copyright © 2016 Ruslan Sabirov. All rights reserved.
-//
-
-import Foundation
-
-//
-//  DailyWeather.swift
 //  havo
 //
 //  Created by Ruslan Sabirov on 3/1/16.
